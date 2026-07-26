@@ -13,24 +13,6 @@ A focused Angular interview exercise demonstrating how to combine two related co
 - Strict TypeScript and `ReadonlyArray`
 - Unit tests for matching, missing data, duplicates, immutability, and signal recomputation
 
-## Publish to GitHub
-
-The repository includes helper scripts that create and push the GitHub repository with the GitHub CLI.
-
-Windows PowerShell:
-
-```powershell
-.\publish-to-github.ps1
-```
-
-macOS/Linux:
-
-```bash
-./publish-to-github.sh
-```
-
-Both scripts default to `JeffreySanford/angular-signals-map-join` as a public repository. Use `-Visibility private` in PowerShell or pass `private` as the second shell-script argument to change visibility.
-
 ## Run locally
 
 ```bash
@@ -97,11 +79,22 @@ The source signals remain writable because they represent application state. `co
 ## Senior-level follow-up topics
 
 - What should happen when the details collection contains duplicate IDs?
+  The duplicates are ignored, and the first matching record is used. This is a common approach in SQL joins, but it may not be appropriate for all use cases.
+
 - Should unmatched primary records be retained, dropped, or reported?
+  Retaining unmatched records is a common approach in left joins, but it may not be appropriate for all use cases. Dropping unmatched records may be appropriate if the details collection is considered authoritative. Reporting unmatched records may be appropriate if the application needs to track missing data.
+
 - At what data size should the join move to the backend or database?
+  Once the data size exceeds the available memory or the performance of the in-memory join becomes unacceptable, it may be appropriate to move the join to the backend or database. This threshold will depend on the specific application and its performance requirements.
+
 - How would server-side filtering and cursor pagination change the design?
+  Server-side filtering and cursor pagination would require the join to be performed on the backend, and the frontend would need to request only the relevant data. This would reduce the amount of data transferred over the network and improve performance, but it would also increase the complexity of the backend and require additional API endpoints.
+
 - Which database indexes would support the equivalent SQL join?
+  Primary key indexes on the bird ID in both the birds and bird details tables would support the equivalent SQL join. Additionally, a foreign key constraint on the bird details table referencing the birds table would ensure referential integrity.
+
 - How would you measure memory use, request latency, payload size, and rendering time?
+  Memory use can be measured using browser developer tools or profiling tools. Request latency can be measured using network monitoring tools or by logging request and response times. Payload size can be measured by inspecting the network requests and responses. Rendering time can be measured using browser developer tools or performance profiling tools.
 
 ## Project structure
 
