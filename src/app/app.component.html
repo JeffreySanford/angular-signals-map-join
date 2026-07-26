@@ -1,0 +1,113 @@
+<main class="page-shell">
+  <header class="hero">
+    <p class="eyebrow">Angular signals interview exercise</p>
+    <h1>Efficiently join related collections</h1>
+    <p class="hero-copy">
+      Two writable signals feed a read-only computed signal. A Map replaces
+      repeated array searches and keeps the join approximately O(n + m).
+    </p>
+  </header>
+
+  <section class="metrics" aria-label="Collection summary">
+    <article>
+      <span>Birds</span>
+      <strong>{{ birds().length }}</strong>
+    </article>
+    <article>
+      <span>Detail records</span>
+      <strong>{{ birdDetails().length }}</strong>
+    </article>
+    <article>
+      <span>Matched birds</span>
+      <strong>{{ matchedCount() }}</strong>
+    </article>
+  </section>
+
+  <section class="actions" aria-label="Example actions">
+    <button type="button" (click)="addFalconDetails()">
+      Add falcon details
+    </button>
+    <button type="button" (click)="addSnowyOwl()">
+      Add snowy owl
+    </button>
+    <button type="button" class="secondary" (click)="reset()">
+      Reset data
+    </button>
+  </section>
+
+  <section class="table-card" aria-labelledby="bird-table-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Computed result</p>
+        <h2 id="bird-table-title">Combined birds</h2>
+      </div>
+      <code>combinedBirds()</code>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Bird</th>
+            <th scope="col">Habitat</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (bird of combinedBirds(); track bird.id) {
+            <tr>
+              <td><code>{{ bird.id }}</code></td>
+              <td>{{ bird.name }}</td>
+              <td>
+                @if (bird.details; as details) {
+                  {{ details.habitat }}
+                } @else {
+                  <span class="missing">No matching details</span>
+                }
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="text-button"
+                  [disabled]="bird.details === null"
+                  (click)="removeDetails(bird.id)"
+                >
+                  Remove details
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="explanation" aria-labelledby="explanation-title">
+    <p class="eyebrow">Senior-level explanation</p>
+    <h2 id="explanation-title">Why this approach scales better</h2>
+    <div class="explanation-grid">
+      <article>
+        <h3>1. Index once</h3>
+        <p>
+          Convert the detail collection into a Map keyed by birdId. This costs
+          O(m) time and O(m) additional memory.
+        </p>
+      </article>
+      <article>
+        <h3>2. Traverse once</h3>
+        <p>
+          Map over the bird collection once and perform an average constant-time
+          lookup for each bird.
+        </p>
+      </article>
+      <article>
+        <h3>3. Derive reactively</h3>
+        <p>
+          computed() tracks both source signals, remains lazy and memoized, and
+          prevents manual synchronization of duplicate state.
+        </p>
+      </article>
+    </div>
+  </section>
+</main>
